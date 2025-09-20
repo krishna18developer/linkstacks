@@ -87,13 +87,15 @@ export default function AddLinkForm({ availableTags, onSubmit, className = "" }:
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Focus form when 'a' key is pressed
-    if (e.key === 'a' && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      const input = document.getElementById('url-input') as HTMLInputElement;
-      if (input && document.activeElement !== input) {
-        e.preventDefault();
-        input.focus();
-      }
-    }
+    // if (e.key === 'a' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    //   const input = document.getElementById('url-input') as HTMLInputElement;
+    //   if (input && document.activeElement !== input) {
+    //     e.preventDefault();
+    //     input.focus();
+    //   }
+    // }
+
+    // Disable default behavior for 'a' key -> since its bugging down the form
   };
 
   return (

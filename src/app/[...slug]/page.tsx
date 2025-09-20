@@ -292,7 +292,7 @@ export default function BoardPage() {
               ) : (
                 <div className="mb-4">
                   <h2 className="text-lg font-semibold text-gray-900">
-                    {selectedTag ? `Links in &quot;${selectedTag}&quot;` : 'All Links'}
+                    {selectedTag ? `Links in "${selectedTag}"` : 'All Links'}
                   </h2>
                   <p className="text-sm text-gray-600">
                     {links.length} link{links.length !== 1 ? 's' : ''}
