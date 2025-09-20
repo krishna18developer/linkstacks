@@ -89,10 +89,26 @@ export const db = {
 
   // Tag operations
   async getTagsForBoard(boardId: string): Promise<string[]> {
+    // First get all link IDs for this board
+    const { data: links, error: linksError } = await supabase
+      .from('links')
+      .select('id')
+      .eq('board_id', boardId)
+      .eq('soft_deleted', false);
+    
+    if (linksError) throw linksError;
+    
+    if (!links || links.length === 0) {
+      return [];
+    }
+    
+    const linkIds = links.map(link => link.id);
+    
+    // Then get all tag paths for these links
     const { data, error } = await supabase
       .from('link_tags')
       .select('tag_path')
-      .eq('link_id', supabase.from('links').select('id').eq('board_id', boardId))
+      .in('link_id', linkIds)
       .order('tag_path');
     
     if (error) throw error;

@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import BoardCreator from '@/components/BoardCreator';
+import SupabaseTest from '@/components/SupabaseTest';
 import { Link, BookOpen, Users, Zap } from 'lucide-react';
 
 export default function HomePage() {
   const [showCreator, setShowCreator] = useState(false);
+  const [showTest, setShowTest] = useState(false);
   const router = useRouter();
 
   const handleBoardCreated = (slugPath: string) => {
@@ -29,6 +31,22 @@ export default function HomePage() {
     );
   }
 
+  if (showTest) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <button
+            onClick={() => setShowTest(false)}
+            className="mb-6 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            ← Back to home
+          </button>
+          <SupabaseTest />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
@@ -39,12 +57,20 @@ export default function HomePage() {
               <Link className="w-8 h-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">LinkStacks</h1>
             </div>
-            <button
-              onClick={() => setShowCreator(true)}
-              className="btn-primary"
-            >
-              Create Board
-            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setShowCreator(true)}
+                className="btn-primary"
+              >
+                Create Board
+              </button>
+              <button
+                onClick={() => setShowTest(true)}
+                className="btn-secondary"
+              >
+                Test Connection
+              </button>
+            </div>
           </div>
         </div>
       </header>
