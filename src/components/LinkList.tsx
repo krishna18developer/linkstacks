@@ -28,10 +28,11 @@ interface SortableLinkItemProps {
   onEditTitle: (linkId: number, newTitle: string) => void;
   onDelete: (linkId: number) => void;
   onCopyUrl: () => void;
+  onPreview: (link: LinkWithTags) => void;
   tagPaths: string[];
 }
 
-function SortableLinkItem({ link, onEditTitle, onDelete, onCopyUrl, tagPaths }: SortableLinkItemProps) {
+function SortableLinkItem({ link, onEditTitle, onDelete, onCopyUrl, onPreview, tagPaths }: SortableLinkItemProps) {
   const {
     attributes,
     listeners,
@@ -63,6 +64,7 @@ function SortableLinkItem({ link, onEditTitle, onDelete, onCopyUrl, tagPaths }: 
         onEditTitle={onEditTitle}
         onDelete={onDelete}
         onCopyUrl={onCopyUrl}
+        onPreview={onPreview}
         tagPaths={tagPaths}
       />
     </div>
@@ -76,6 +78,7 @@ interface LinkListProps {
   onEditTitle: (linkId: number, newTitle: string) => void;
   onDelete: (linkId: number) => void;
   onCopyUrl: () => void;
+  onPreview: (link: LinkWithTags) => void;
   tagPaths: string[];
 }
 
@@ -86,6 +89,7 @@ export default function LinkList({
   onEditTitle,
   onDelete,
   onCopyUrl,
+  onPreview,
   tagPaths,
 }: LinkListProps) {
   const sensors = useSensors(
@@ -157,6 +161,7 @@ export default function LinkList({
                 onEditTitle={onEditTitle}
                 onDelete={onDelete}
                 onCopyUrl={onCopyUrl}
+                onPreview={onPreview}
                 tagPaths={tagPaths}
               />
             </div>

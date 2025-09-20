@@ -6,7 +6,9 @@ import useSWR from 'swr';
 import { 
   ArrowLeft, 
   Share2, 
-  Plus
+  Plus,
+  Grid3X3,
+  List
 } from 'lucide-react';
 import { db, Board, LinkWithTags } from '@/lib/supabaseClient';
 import { getClientId } from '@/lib/titleFetcher';
@@ -14,6 +16,8 @@ import { useToast, ToastContainer } from '@/components/Toast';
 import TagTree from '@/components/TagTree';
 import TagBreadcrumbs from '@/components/TagBreadcrumbs';
 import LinkList from '@/components/LinkList';
+import ThumbnailGrid from '@/components/ThumbnailGrid';
+import LinkPreview from '@/components/LinkPreview';
 import AddLinkForm from '@/components/AddLinkForm';
 import SearchBar from '@/components/SearchBar';
 
@@ -60,6 +64,8 @@ export default function BoardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'thumbnails'>('list');
+  const [previewLink, setPreviewLink] = useState<LinkWithTags | null>(null);
 
   // Fetch board data
   const { data: board, error: boardError } = useSWR(
@@ -187,6 +193,14 @@ export default function BoardPage() {
     }
   };
 
+  const handlePreview = (link: LinkWithTags) => {
+    setPreviewLink(link);
+  };
+
+  const handleClosePreview = () => {
+    setPreviewLink(null);
+  };
+
   const currentLinks = isSearchMode ? searchResults : links;
 
   return (
@@ -211,6 +225,32 @@ export default function BoardPage() {
             </div>
             
             <div className="flex items-center space-x-2">
+              {/* View Toggle */}
+              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-md transition-colors ${
+                    viewMode === 'list' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                  title="List view"
+                >
+                  <List className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('thumbnails')}
+                  className={`p-2 rounded-md transition-colors ${
+                    viewMode === 'thumbnails' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                  title="Thumbnail view"
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </button>
+              </div>
+              
               <button
                 onClick={handleShare}
                 className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
@@ -300,15 +340,24 @@ export default function BoardPage() {
                 </div>
               )}
 
-              <LinkList
-                links={currentLinks}
-                tagPath={selectedTag}
-                onReorder={handleReorder}
-                onEditTitle={handleEditTitle}
-                onDelete={handleDeleteLink}
-                onCopyUrl={handleCopyUrl}
-                tagPaths={tags}
-              />
+              {viewMode === 'list' ? (
+                <LinkList
+                  links={currentLinks}
+                  tagPath={selectedTag}
+                  onReorder={handleReorder}
+                  onEditTitle={handleEditTitle}
+                  onDelete={handleDeleteLink}
+                  onCopyUrl={handleCopyUrl}
+                  onPreview={handlePreview}
+                  tagPaths={tags}
+                />
+              ) : (
+                <ThumbnailGrid
+                  links={currentLinks}
+                  onPreview={handlePreview}
+                  tagPath={selectedTag}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -316,6 +365,15 @@ export default function BoardPage() {
 
       {/* Toast Container */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+      
+      {/* Link Preview Modal */}
+      {previewLink && (
+        <LinkPreview
+          link={previewLink}
+          isOpen={!!previewLink}
+          onClose={handleClosePreview}
+        />
+      )}
     </div>
   );
 }

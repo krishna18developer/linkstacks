@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, Edit2, Trash2, Copy, Check } from 'lucide-react';
+import { ExternalLink, Edit2, Trash2, Copy, Check, Maximize2 } from 'lucide-react';
 import { LinkWithTags } from '@/lib/supabaseClient';
 
 interface LinkItemProps {
@@ -9,10 +9,11 @@ interface LinkItemProps {
   onEditTitle: (linkId: number, newTitle: string) => void;
   onDelete: (linkId: number) => void;
   onCopyUrl: () => void;
+  onPreview: (link: LinkWithTags) => void;
   tagPaths: string[];
 }
 
-export default function LinkItem({ link, onEditTitle, onDelete, onCopyUrl }: LinkItemProps) {
+export default function LinkItem({ link, onEditTitle, onDelete, onCopyUrl, onPreview }: LinkItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(link.title || '');
   const [copied, setCopied] = useState(false);
@@ -149,6 +150,13 @@ export default function LinkItem({ link, onEditTitle, onDelete, onCopyUrl }: Lin
         {/* Actions */}
         <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="flex items-center space-x-1">
+            <button
+              onClick={() => onPreview(link)}
+              className="p-1 text-gray-400 hover:text-blue-600"
+              title="Preview link"
+            >
+              <Maximize2 className="w-3 h-3" />
+            </button>
             <button
               onClick={() => setIsEditing(true)}
               className="p-1 text-gray-400 hover:text-gray-600"
